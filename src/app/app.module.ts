@@ -1,16 +1,26 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
+import {environment} from '../environments/environment';
+import {AngularFireModule} from '@angular/fire';
+import {AngularFirestoreModule, FirestoreSettingsToken} from '@angular/fire/firestore';
+import { HighscoreEntryComponent } from './highscore-entry/highscore-entry.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DashboardComponent,
+    HighscoreEntryComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebase)
   ],
-  providers: [],
+  providers: [{provide: FirestoreSettingsToken, useValue: {}}],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -1,0 +1,8 @@
+<tr *ngIf="user" class="entry position-{{entryData.position}}">
+  <td class="cell photo">
+    <img *ngIf="user.photoURL" class="avatar"
+         [src]="user.photoURL">
+  </td>
+  <td class="cell name">{{user.displayName}}</td>
+  <td class="cell points">{{entryData.points}}p</td>
+</tr>
