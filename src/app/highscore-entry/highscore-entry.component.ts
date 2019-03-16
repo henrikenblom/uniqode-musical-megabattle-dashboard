@@ -17,13 +17,13 @@ export class HighscoreEntryComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.fetchGuest();
+    this.fetchUser();
   }
 
-  private fetchGuest() {
+  private fetchUser() {
     this.db.collection('users').doc<User>(this.entryData.userId).valueChanges()
-      .forEach(guest => {
-        this.user = guest;
+      .forEach(u => {
+        this.user = u;
       });
   }
 }

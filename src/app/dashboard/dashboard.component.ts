@@ -9,31 +9,30 @@ import {animate, style, transition, trigger} from '@angular/animations';
   styleUrls: ['./dashboard.component.css'],
   animations: [
     trigger('fade', [
-      transition(':enter', [style({opacity: 0}),
-        animate('1s ease',
-          style({opacity: '*'}))]),
-      transition(':leave', [style({opacity: '*'}),
-        animate('1s ease',
-          style({opacity: 0}))])
-    ]),
-    trigger('fade-fast', [
-      transition(':enter', [style({opacity: 0}),
-        animate('.5s ease',
-          style({opacity: '*'}))]),
-      transition(':leave', [style({opacity: '*'}),
-        animate('.5s ease',
-          style({opacity: 0}))])
+      transition(':enter', [
+        style({opacity: 0}),
+        animate('1.5s ease-in')
+      ]),
+      transition(':leave',
+        animate('1.5s ease-out',
+          style({opacity: 0})))
     ])
   ]
 })
 export class DashboardComponent implements OnInit {
 
-  MAX_PAGE_INDEX = 2;
-  MAX_SCORES = 5;
+  MAX_PAGE_INDEX = 7;
+  MAX_SCORES = 4;
+  VIEW_DELAY = 10000;
+  initialized = false;
   highScoreEntries: HighScoreEntry[] = [];
   mostInvoluntaryRocker: StatWinnerEntry;
   popMaster: StatWinnerEntry;
-  currentPageIndex = 0;
+  edmMaster: StatWinnerEntry;
+  musicLover: StatWinnerEntry;
+  soulMaster: StatWinnerEntry;
+  discoMaster: StatWinnerEntry;
+  currentPageIndex = 2;
 
   constructor(private db: AngularFirestore) {
   }
@@ -48,7 +47,7 @@ export class DashboardComponent implements OnInit {
       if (this.currentPageIndex > this.MAX_PAGE_INDEX) {
         this.currentPageIndex = 0;
       }
-    }, 10000);
+    }, this.VIEW_DELAY);
   }
 
   private fetchHighScores() {
@@ -63,12 +62,18 @@ export class DashboardComponent implements OnInit {
         const stats = statsDocument.payload.doc.data() as PlayerStats;
         this.highScoreEntries.push({points: stats.points, userId: statsDocument.payload.doc.id, position: pos});
         if (pos++ === this.MAX_SCORES) {
+          this.highScoreEntries.push({points: stats.points, userId: statsDocument.payload.doc.id, position: pos + 1});
           break;
         }
       }
-      if (this.highScoreEntries.length > 0) {
+      if (!this.initialized && this.highScoreEntries.length > 0) {
+        this.initialized = true;
         this.fetchMostInvoluntaryRocker();
         this.fetchPopMaster();
+        this.fetchEdmMaster();
+        this.fetchSoulMaster();
+        this.fetchDiscoMaster();
+        this.fetchMusicLover();
         this.startDashboardRotation();
       }
     });
@@ -80,11 +85,11 @@ export class DashboardComponent implements OnInit {
       .collection<PlayerStats>('stats', ref =>
         ref.orderBy('rock_points', 'desc'))
       .snapshotChanges().forEach(data => {
-      let currentRocker = {
+      let currentRocker: StatWinnerEntry = {
         userId: data[0].payload.doc.id,
         points: data[0].payload.doc.data().rock_points,
         likes: data[0].payload.doc.data().rock_likes,
-        category: 'rock'
+        category: 'rock-'
       };
       let furthestDistance = currentRocker.points - currentRocker.likes;
       for (const statsDocument of data) {
@@ -94,7 +99,7 @@ export class DashboardComponent implements OnInit {
             userId: statsDocument.payload.doc.id,
             points: stats.rock_points,
             likes: stats.rock_likes,
-            category: 'rock'
+            category: 'rock-'
           };
           furthestDistance = currentRocker.points - currentRocker.likes;
         }
@@ -109,27 +114,157 @@ export class DashboardComponent implements OnInit {
       .collection<PlayerStats>('stats', ref =>
         ref.orderBy('pop_points', 'desc'))
       .snapshotChanges().forEach(data => {
-      let currentPopMaster = {
+      let currentMaster: StatWinnerEntry = {
         userId: data[0].payload.doc.id,
         points: data[0].payload.doc.data().pop_points,
         likes: data[0].payload.doc.data().pop_likes,
-        category: 'pop'
+        category: 'pop-'
       };
-      let factor = currentPopMaster.points + currentPopMaster.likes;
+      let factor = currentMaster.points + currentMaster.likes;
       for (const statsDocument of data) {
         const stats = statsDocument.payload.doc.data() as PlayerStats;
         if ((stats.pop_points + stats.pop_likes) > factor) {
-          currentPopMaster = {
+          currentMaster = {
             userId: statsDocument.payload.doc.id,
             points: stats.pop_points,
             likes: stats.pop_likes,
-            category: 'pop'
+            category: 'pop-'
           };
-          factor = currentPopMaster.points + currentPopMaster.likes;
+          factor = currentMaster.points + currentMaster.likes;
         }
       }
-      this.popMaster = currentPopMaster;
+      this.popMaster = currentMaster;
     });
+  }
+
+  private fetchEdmMaster() {
+    this.db.collection('musicquiz')
+      .doc('scoreboard')
+      .collection<PlayerStats>('stats', ref =>
+        ref.orderBy('edm_points', 'desc'))
+      .snapshotChanges().forEach(data => {
+      let currentMaster: StatWinnerEntry = {
+        userId: data[0].payload.doc.id,
+        points: data[0].payload.doc.data().edm_points,
+        likes: data[0].payload.doc.data().edm_likes,
+        category: 'edm-'
+      };
+      let factor = currentMaster.points + currentMaster.likes;
+      for (const statsDocument of data) {
+        const stats = statsDocument.payload.doc.data() as PlayerStats;
+        if ((stats.edm_points + stats.edm_likes) > factor) {
+          currentMaster = {
+            userId: statsDocument.payload.doc.id,
+            points: stats.edm_points,
+            likes: stats.edm_likes,
+            category: 'edm-'
+          };
+          factor = currentMaster.points + currentMaster.likes;
+        }
+      }
+      this.edmMaster = currentMaster;
+    });
+  }
+
+  private fetchSoulMaster() {
+    this.db.collection('musicquiz')
+      .doc('scoreboard')
+      .collection<PlayerStats>('stats', ref =>
+        ref.orderBy('soul_points', 'desc'))
+      .snapshotChanges().forEach(data => {
+      let currentMaster: StatWinnerEntry = {
+        userId: data[0].payload.doc.id,
+        points: data[0].payload.doc.data().soul_points,
+        likes: data[0].payload.doc.data().soul_likes,
+        category: 'soul-'
+      };
+      let factor = currentMaster.points + currentMaster.likes;
+      for (const statsDocument of data) {
+        const stats = statsDocument.payload.doc.data() as PlayerStats;
+        if ((stats.soul_points + stats.soul_likes) > factor) {
+          currentMaster = {
+            userId: statsDocument.payload.doc.id,
+            points: stats.soul_points,
+            likes: stats.soul_likes,
+            category: 'soul-'
+          };
+          factor = currentMaster.points + currentMaster.likes;
+        }
+      }
+      this.soulMaster = currentMaster;
+    });
+  }
+
+  private fetchDiscoMaster() {
+    this.db.collection('musicquiz')
+      .doc('scoreboard')
+      .collection<PlayerStats>('stats', ref =>
+        ref.orderBy('disco_points', 'desc'))
+      .snapshotChanges().forEach(data => {
+      let currentMaster: StatWinnerEntry = {
+        userId: data[0].payload.doc.id,
+        points: data[0].payload.doc.data().disco_points,
+        likes: data[0].payload.doc.data().disco_likes,
+        category: 'disco-'
+      };
+      let factor = currentMaster.points + currentMaster.likes;
+      for (const statsDocument of data) {
+        const stats = statsDocument.payload.doc.data() as PlayerStats;
+        if ((stats.disco_points + stats.disco_likes) > factor) {
+          currentMaster = {
+            userId: statsDocument.payload.doc.id,
+            points: stats.disco_points,
+            likes: stats.disco_likes,
+            category: 'disco-'
+          };
+          factor = currentMaster.points + currentMaster.likes;
+        }
+      }
+      this.discoMaster = currentMaster;
+    });
+  }
+
+  private fetchMusicLover() {
+    this.db.collection('musicquiz')
+      .doc('scoreboard')
+      .collection<PlayerStats>('stats', ref =>
+        ref.orderBy('points', 'desc'))
+      .snapshotChanges().forEach(data => {
+      let currentLover: StatWinnerEntry = {
+        userId: data[0].payload.doc.id,
+        points: data[0].payload.doc.data().points,
+        likes: this.summarizeLikes(data[0].payload.doc.data() as PlayerStats),
+        category: ''
+      };
+      let factor = currentLover.likes;
+      for (const statsDocument of data) {
+        const stats = statsDocument.payload.doc.data() as PlayerStats;
+        const totalLikes = this.summarizeLikes(stats);
+        if (totalLikes > factor) {
+          currentLover = {
+            userId: statsDocument.payload.doc.id,
+            points: stats.points,
+            likes: totalLikes,
+            category: ''
+          };
+          factor = totalLikes;
+        }
+      }
+      this.musicLover = currentLover;
+    });
+  }
+
+  private summarizeLikes(stats: PlayerStats): number {
+    return stats.pop_likes
+      + stats.rock_likes
+      + stats.soul_likes
+      + stats.indie_likes
+      + stats.rnb_likes
+      + stats.disco_likes
+      + stats.rap_likes
+      + stats.reggae_likes
+      + stats.edm_likes
+      + stats.punk_likes;
   }
 
 }

@@ -1,6 +1,5 @@
 .entry {
-  padding-top: 1em;
-  width: 100%;
+
 }
 
 .cell img {
@@ -8,7 +7,8 @@
   width: 1.5em;
   border-radius: 50%;
   margin-right: 0.5em;
-  margin-top: 0.25em;
+  margin-top: 0.13em;
+  box-shadow: 0 0 1.5em rgba(179, 17, 183, 0.6);
 }
 
 .cell {
@@ -18,5 +18,10 @@
 }
 
 .name {
-  width: 18em;
+  width: 20em;
+}
+
+.points {
+  width: 3em;
+  text-align: right;
 }

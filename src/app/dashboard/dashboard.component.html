@@ -2,21 +2,34 @@
         src="https://www.shadertoy.com/embed/MsyczG?gui=false&t=10&paused=false&muted=false" allowfullscreen></iframe>
 <div class="highscore-page">
 
-  <div class="highscore-content" *ngIf="currentPageIndex==0" @fade>
-    <div class="highscore-list-header">Hetast just nu</div>
+  <div class="highscore-content" *ngIf="currentPageIndex<2" @fade>
     <table class="highscore-list">
-      <app-highscore-entry *ngFor="let entry of highScoreEntries" [entryData]="entry" @fade-fast></app-highscore-entry>
+      <app-highscore-entry *ngFor="let entry of highScoreEntries" [entryData]="entry"></app-highscore-entry>
     </table>
   </div>
 
-  <div class="highscore-content" *ngIf="currentPageIndex==1 && mostInvoluntaryRocker" @fade>
-    <div class="highscore-statwinner-header">UniQodes mest ofrivilliga rockare</div>
-    <app-stat-winner [entryData]="mostInvoluntaryRocker"></app-stat-winner>
+  <div class="highscore-content" *ngIf="currentPageIndex==2 && discoMaster" @fade>
+    <app-stat-winner [header]="'UniQodes Disco-kung'" [entryData]="discoMaster"></app-stat-winner>
   </div>
 
-  <div class="highscore-content" *ngIf="currentPageIndex==2 && popMaster" @fade>
-    <div class="highscore-statwinner-header">UniQodes popsnöre</div>
-    <app-stat-winner [entryData]="popMaster"></app-stat-winner>
+  <div class="highscore-content" *ngIf="currentPageIndex==3 && mostInvoluntaryRocker" @fade>
+    <app-stat-winner [header]="'UniQodes mest ofrivilliga rockare'" [entryData]="mostInvoluntaryRocker"></app-stat-winner>
+  </div>
+
+  <div class="highscore-content" *ngIf="currentPageIndex==4 && popMaster" @fade>
+    <app-stat-winner [header]="'UniQodes popsnöre'" [entryData]="popMaster"></app-stat-winner>
+  </div>
+
+  <div class="highscore-content" *ngIf="currentPageIndex==5 && edmMaster" @fade>
+    <app-stat-winner [header]="'UniQodes Calvin Harris'" [entryData]="edmMaster"></app-stat-winner>
+  </div>
+
+  <div class="highscore-content" *ngIf="currentPageIndex==6 && soulMaster" @fade>
+    <app-stat-winner [header]="'UniQodes Soul-kung'" [entryData]="soulMaster"></app-stat-winner>
+  </div>
+
+  <div class="highscore-content" *ngIf="currentPageIndex==7 && musicLover" @fade>
+    <app-stat-winner [header]="'UniQodes mesta musikälskare'" [entryData]="musicLover"></app-stat-winner>
   </div>
 
 </div>

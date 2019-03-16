@@ -22,14 +22,20 @@
 }
 
 .highscore-list {
-  width: 80%;
+  width: 75%;
+  padding: 0.4em 0.5em 0.3em;
   margin-left: auto;
   margin-right: auto;
+  background-color: rgba(14, 9, 211, 0.35);
+  border-radius: 1em;
 }
 
 .highscore-content {
   position: absolute;
-  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 11.2vw;
+  width: inherit;
 }
 
 #canvas {

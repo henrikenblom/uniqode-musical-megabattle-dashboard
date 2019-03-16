@@ -9,21 +9,41 @@ import {AngularFirestore} from '@angular/fire/firestore';
 })
 export class StatWinnerComponent implements AfterViewInit {
 
+  get genderizedHeader(): string {
+    if (this.isFemale()) {
+      return this.header.replace('kung', 'drottning')
+        .replace('Calvin Harris', 'Zara Larsson');
+    } else {
+      return this.header;
+    }
+  }
+
   @Input()
   entryData: StatWinnerEntry;
+  @Input()
+  header: string;
   user: User;
 
   constructor(private db: AngularFirestore) {
   }
 
   ngAfterViewInit() {
-    this.fetchGuest();
+    this.fetchUser();
   }
 
-  private fetchGuest() {
+  private fetchUser() {
     this.db.collection('users').doc<User>(this.entryData.userId).valueChanges()
-      .forEach(guest => {
-        this.user = guest;
+      .forEach(u => {
+        this.user = u;
       });
+  }
+
+  private isFemale(): boolean {
+    return this.user.displayName.startsWith('Linda')
+      || this.user.displayName.startsWith('Sara')
+      || this.user.displayName.startsWith('Veronica')
+      || this.user.displayName.startsWith('Sandra')
+      || this.user.displayName.startsWith('Susan')
+      || this.user.displayName.startsWith('Viktoria');
   }
 }

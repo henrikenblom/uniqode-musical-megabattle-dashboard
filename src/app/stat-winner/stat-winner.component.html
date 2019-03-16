@@ -1,8 +1,14 @@
-<tr *ngIf="user" class="entry">
-  <td class="cell photo">
-    <img *ngIf="user.photoURL" class="avatar"
-         [src]="user.photoURL">
-  </td>
-  <td class="cell name">{{user.displayName}}</td>
-  <td class="cell points">{{entryData.category}}-poäng: {{entryData.points}} {{entryData.category}}-likes: {{entryData.likes}}</td>
-</tr>
+<div class="statwinner">
+  <div *ngIf="user" class="highscore-statwinner-header">{{user.displayName}}</div>
+  <div *ngIf="user" class="entry">
+    <td class="cell photo">
+      <img *ngIf="user.photoURL" class="avatar"
+           [src]="user.photoURL">
+    </td>
+    <td class="cell name">"{{genderizedHeader}}"</td>
+    <td class="cell points">
+      <span>{{entryData.category}}poäng: {{entryData.points}}</span>
+      <span>Like-summa: {{entryData.likes}}</span>
+    </td>
+  </div>
+</div>
