@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {HighScoreEntry, PlayerStats, StatWinnerEntry} from '../declarations';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {Howl, Howler} from 'howler';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +34,7 @@ export class DashboardComponent implements OnInit {
   soulMaster: StatWinnerEntry;
   discoMaster: StatWinnerEntry;
   currentPageIndex = 0;
+  pop = new Howl({src: '../../assets/zapsplat_cartoon_pop_small_lid.mp3', volume: 0.2});
 
   constructor(private db: AngularFirestore) {
   }
@@ -56,6 +58,7 @@ export class DashboardComponent implements OnInit {
       .collection<PlayerStats>('stats', ref =>
         ref.orderBy('points', 'desc'))
       .snapshotChanges().forEach(data => {
+      this.pop.play();
       this.highScoreEntries = [];
       let pos = 1;
       for (const statsDocument of data) {
