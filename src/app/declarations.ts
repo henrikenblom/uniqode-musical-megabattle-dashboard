@@ -30,6 +30,13 @@ export interface HighScoreEntry {
   position: number;
 }
 
+export interface StatWinnerEntry {
+  userId: string;
+  points: number;
+  likes: number;
+  category: string;
+}
+
 export interface User {
   displayName: string;
   email: string;

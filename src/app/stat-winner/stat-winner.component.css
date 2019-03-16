@@ -1,0 +1,19 @@
+.cell {
+  display: block;
+}
+
+.cell img {
+  height: 6em;
+  width: 6em;
+  border-radius: 50%;
+  margin-top: 0.25em;
+  box-shadow: 0 0 4em #b311b7;
+}
+
+.name {
+  font-size: 1.2em;
+}
+
+.points {
+  font-size: 0.8em;
+}

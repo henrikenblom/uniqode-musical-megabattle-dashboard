@@ -1,8 +1,23 @@
-<iframe id="canvas" width="1920" height="1080"  allow="microphone" frameborder="0" src="https://www.shadertoy.com/embed/MsyczG?gui=false&t=10&paused=false&muted=false" allowfullscreen></iframe>
+<iframe id="canvas" width="1920" height="1080" allow="microphone" frameborder="0"
+        src="https://www.shadertoy.com/embed/MsyczG?gui=false&t=10&paused=false&muted=false" allowfullscreen></iframe>
 <div class="highscore-page">
-  <div class="highscore-list-header">Hetast just nu</div>
-  <table class="highscore-list">
-    <app-highscore-entry *ngFor="let entry of highScoreEntries" [entryData]="entry"></app-highscore-entry>
-  </table>
+
+  <div class="highscore-content" *ngIf="currentPageIndex==0" @fade>
+    <div class="highscore-list-header">Hetast just nu</div>
+    <table class="highscore-list">
+      <app-highscore-entry *ngFor="let entry of highScoreEntries" [entryData]="entry" @fade-fast></app-highscore-entry>
+    </table>
+  </div>
+
+  <div class="highscore-content" *ngIf="currentPageIndex==1 && mostInvoluntaryRocker" @fade>
+    <div class="highscore-statwinner-header">UniQodes mest ofrivilliga rockare</div>
+    <app-stat-winner [entryData]="mostInvoluntaryRocker"></app-stat-winner>
+  </div>
+
+  <div class="highscore-content" *ngIf="currentPageIndex==2 && popMaster" @fade>
+    <div class="highscore-statwinner-header">UniQodes popsnöre</div>
+    <app-stat-winner [entryData]="popMaster"></app-stat-winner>
+  </div>
+
 </div>
 

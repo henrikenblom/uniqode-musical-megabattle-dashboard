@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {HighScoreEntry, User} from '../declarations';
+import {AfterViewInit, Component, Input} from '@angular/core';
+import {StatWinnerEntry, User} from '../declarations';
 import {AngularFirestore} from '@angular/fire/firestore';
 
 @Component({
-  selector: 'app-highscore-entry',
-  templateUrl: './highscore-entry.component.html',
-  styleUrls: ['./highscore-entry.component.css']
+  selector: 'app-stat-winner',
+  templateUrl: './stat-winner.component.html',
+  styleUrls: ['./stat-winner.component.css']
 })
-export class HighscoreEntryComponent implements AfterViewInit {
+export class StatWinnerComponent implements AfterViewInit {
 
   @Input()
-  entryData: HighScoreEntry;
+  entryData: StatWinnerEntry;
   user: User;
 
   constructor(private db: AngularFirestore) {
