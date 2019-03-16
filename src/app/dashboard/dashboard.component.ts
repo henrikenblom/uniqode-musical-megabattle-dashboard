@@ -11,7 +11,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
     trigger('fade', [
       transition(':enter', [
         style({opacity: 0}),
-        animate('1.5s ease-in')
+        animate('1.5s 1.5s ease-in')
       ]),
       transition(':leave',
         animate('1.5s ease-out',
@@ -22,8 +22,8 @@ import {animate, style, transition, trigger} from '@angular/animations';
 export class DashboardComponent implements OnInit {
 
   MAX_PAGE_INDEX = 7;
-  MAX_SCORES = 4;
-  VIEW_DELAY = 10000;
+  MAX_SCORES = 5;
+  VIEW_DELAY = 11500;
   initialized = false;
   highScoreEntries: HighScoreEntry[] = [];
   mostInvoluntaryRocker: StatWinnerEntry;
@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit {
   musicLover: StatWinnerEntry;
   soulMaster: StatWinnerEntry;
   discoMaster: StatWinnerEntry;
-  currentPageIndex = 2;
+  currentPageIndex = 0;
 
   constructor(private db: AngularFirestore) {
   }
@@ -62,7 +62,6 @@ export class DashboardComponent implements OnInit {
         const stats = statsDocument.payload.doc.data() as PlayerStats;
         this.highScoreEntries.push({points: stats.points, userId: statsDocument.payload.doc.id, position: pos});
         if (pos++ === this.MAX_SCORES) {
-          this.highScoreEntries.push({points: stats.points, userId: statsDocument.payload.doc.id, position: pos + 1});
           break;
         }
       }

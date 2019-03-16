@@ -26,7 +26,8 @@
   padding: 0.4em 0.5em 0.3em;
   margin-left: auto;
   margin-right: auto;
-  background-color: rgba(14, 9, 211, 0.35);
+  margin-top: 0.15em;
+  background-color: rgba(14, 9, 211, 0.4);
   border-radius: 1em;
 }
 
@@ -34,7 +35,7 @@
   position: absolute;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 11.2vw;
+  margin-top: 11vw;
   width: inherit;
 }
 
