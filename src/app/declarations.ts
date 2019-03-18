@@ -43,3 +43,7 @@ export interface User {
   photoURL: string;
   uid: string;
 }
+
+export interface ApplicationState {
+  musicQuizRunning: boolean;
+}

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {HighScoreEntry, PlayerStats, StatWinnerEntry} from '../declarations';
+import {ApplicationState, HighScoreEntry, PlayerStats, StatWinnerEntry} from '../declarations';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {Howl, Howler} from 'howler';
 
@@ -11,12 +11,12 @@ import {Howl, Howler} from 'howler';
   animations: [
     trigger('fade', [
       transition(':enter', [
-        style({opacity: 0}),
+        style({opacity: 0, filter: 'blur(6px)'}),
         animate('1.5s 1.5s ease-in')
       ]),
       transition(':leave',
         animate('1.5s ease-out',
-          style({opacity: 0})))
+          style({opacity: 0, filter: 'blur(6px)'})))
     ])
   ]
 })
@@ -34,12 +34,14 @@ export class DashboardComponent implements OnInit {
   soulMaster: StatWinnerEntry;
   discoMaster: StatWinnerEntry;
   currentPageIndex = 0;
+  generalStateQuizRunning = false;
   pop = new Howl({src: '../../assets/zapsplat_cartoon_pop_small_lid.mp3', volume: 0.2});
 
   constructor(private db: AngularFirestore) {
   }
 
   ngOnInit() {
+    this.startFetchingGeneralState();
     this.fetchHighScores();
   }
 
@@ -254,6 +256,15 @@ export class DashboardComponent implements OnInit {
       }
       this.musicLover = currentLover;
     });
+  }
+
+  private startFetchingGeneralState() {
+    this.db.collection('general')
+      .doc<ApplicationState>('state')
+      .valueChanges()
+      .forEach(state => {
+        this.generalStateQuizRunning = state.musicQuizRunning;
+      });
   }
 
   private summarizeLikes(stats: PlayerStats): number {
