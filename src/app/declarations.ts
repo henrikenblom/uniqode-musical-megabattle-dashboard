@@ -42,6 +42,7 @@ export interface User {
   email: string;
   photoURL: string;
   uid: string;
+  admin?: boolean;
 }
 
 export interface ApplicationState {

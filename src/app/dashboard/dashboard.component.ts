@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {ApplicationState, HighScoreEntry, PlayerStats, StatWinnerEntry} from '../declarations';
+import {ApplicationState, HighScoreEntry, PlayerStats, StatWinnerEntry, User} from '../declarations';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {Howl, Howler} from 'howler';
 
@@ -26,7 +26,10 @@ export class DashboardComponent implements OnInit {
   MAX_SCORES = 5;
   VIEW_DELAY = 11500;
   initialized = false;
+  usersFetched = false;
   highScoreEntries: HighScoreEntry[] = [];
+  users: Map<string, User> = new Map<string, User>();
+  userCount = 0;
   mostInvoluntaryRocker: StatWinnerEntry;
   popMaster: StatWinnerEntry;
   edmMaster: StatWinnerEntry;
@@ -36,13 +39,22 @@ export class DashboardComponent implements OnInit {
   currentPageIndex = 0;
   generalStateQuizRunning = false;
   pop = new Howl({src: '../../assets/zapsplat_cartoon_pop_small_lid.mp3', volume: 0.2});
+  soundOn = true;
+
+  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 's') {
+      this.soundOn = !this.soundOn;
+      console.log('Sound on: ', this.soundOn);
+    }
+  }
 
   constructor(private db: AngularFirestore) {
   }
 
   ngOnInit() {
     this.startFetchingGeneralState();
-    this.fetchHighScores();
+    this.startFetchingUsers();
   }
 
   private startDashboardRotation() {
@@ -54,20 +66,44 @@ export class DashboardComponent implements OnInit {
     }, this.VIEW_DELAY);
   }
 
+  private startFetchingUsers() {
+    this.db.collection<User>('users')
+      .valueChanges()
+      .forEach(users => {
+        let uc = 0;
+        users.forEach(user => {
+          this.users.set(user.uid, user);
+          if (!user.admin) {
+            uc++;
+          }
+        });
+        this.userCount = uc;
+        if (!this.usersFetched && uc > 0) {
+          this.usersFetched = true;
+          this.fetchHighScores();
+        }
+      });
+  }
+
   private fetchHighScores() {
     this.db.collection('musicquiz')
       .doc('scoreboard')
       .collection<PlayerStats>('stats', ref =>
         ref.orderBy('points', 'desc'))
       .snapshotChanges().forEach(data => {
-      this.pop.play();
+      if (this.soundOn) {
+        this.pop.play();
+      }
       this.highScoreEntries = [];
       let pos = 1;
       for (const statsDocument of data) {
         const stats = statsDocument.payload.doc.data() as PlayerStats;
-        this.highScoreEntries.push({points: stats.points, userId: statsDocument.payload.doc.id, position: pos});
-        if (pos++ === this.MAX_SCORES) {
-          break;
+        const uid = statsDocument.payload.doc.id;
+        if (!this.users.get(uid).admin) {
+          this.highScoreEntries.push({points: stats.points, userId: uid, position: pos});
+          if (pos++ === this.MAX_SCORES) {
+            break;
+          }
         }
       }
       if (!this.initialized && this.highScoreEntries.length > 0) {
