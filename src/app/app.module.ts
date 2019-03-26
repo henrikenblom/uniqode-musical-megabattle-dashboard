@@ -9,13 +9,15 @@ import {AngularFirestoreModule, FirestoreSettingsToken} from '@angular/fire/fire
 import { HighscoreEntryComponent } from './highscore-entry/highscore-entry.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { StatWinnerComponent } from './stat-winner/stat-winner.component';
+import { ContenderComponent } from './contender/contender.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     HighscoreEntryComponent,
-    StatWinnerComponent
+    StatWinnerComponent,
+    ContenderComponent
   ],
   imports: [
     BrowserModule,

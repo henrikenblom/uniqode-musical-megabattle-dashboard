@@ -1,0 +1,40 @@
+.cell {
+  display: block;
+}
+
+.cell img {
+  height: 6em;
+  width: 6em;
+  border-radius: 50%;
+  margin-top: 0.6em;
+  margin-bottom: 0.4em;
+  box-shadow: 0 0 4em #b311b7;
+}
+
+.name {
+  font-size: 1em;
+  font-style: italic;
+}
+
+.points {
+  font-style: italic;
+  font-size: 1em;
+}
+
+.points>span {
+  margin-left: 0.3em;
+  margin-left: 0.3em;
+}
+
+.highscore-statwinner-header {
+  font-size: 1.5em;
+}
+
+.statwinner {
+  background-color: rgba(14, 9, 211, 0.4);
+  margin-right: auto;
+  margin-left: auto;
+  width: fit-content;
+  border-radius: 1em;
+  padding: 0.5em 0.8em;
+}

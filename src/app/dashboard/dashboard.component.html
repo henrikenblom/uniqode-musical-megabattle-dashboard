@@ -4,35 +4,14 @@
 
   <ng-container *ngIf="initialized">
 
-    <div class="highscore-content" *ngIf="currentPageIndex<2" @fade>
+    <div class="highscore-content" *ngIf="showHighScore" @fade>
       <table class="highscore-list">
         <app-highscore-entry *ngFor="let entry of highScoreEntries" [entryData]="entry"></app-highscore-entry>
       </table>
     </div>
 
-    <div class="highscore-content" *ngIf="currentPageIndex==2 && discoMaster" @fade>
-      <app-stat-winner [header]="'UniQodes Disco-kung'" [entryData]="discoMaster"></app-stat-winner>
-    </div>
-
-    <div class="highscore-content" *ngIf="currentPageIndex==3 && mostInvoluntaryRocker" @fade>
-      <app-stat-winner [header]="'UniQodes mest ofrivilliga rockare'"
-                       [entryData]="mostInvoluntaryRocker"></app-stat-winner>
-    </div>
-
-    <div class="highscore-content" *ngIf="currentPageIndex==4 && popMaster" @fade>
-      <app-stat-winner [header]="'UniQodes popsnöre'" [entryData]="popMaster"></app-stat-winner>
-    </div>
-
-    <div class="highscore-content" *ngIf="currentPageIndex==5 && edmMaster" @fade>
-      <app-stat-winner [header]="'UniQodes Calvin Harris'" [entryData]="edmMaster"></app-stat-winner>
-    </div>
-
-    <div class="highscore-content" *ngIf="currentPageIndex==6 && soulMaster" @fade>
-      <app-stat-winner [header]="'UniQodes Soul-kung'" [entryData]="soulMaster"></app-stat-winner>
-    </div>
-
-    <div class="highscore-content" *ngIf="currentPageIndex==7 && musicLover" @fade>
-      <app-stat-winner [header]="'UniQodes mesta musikälskare'" [entryData]="musicLover"></app-stat-winner>
+    <div class="highscore-content" *ngIf="!showHighScore && currentContender" @fade>
+      <app-contender [userId]="currentContender"></app-contender>
     </div>
 
   </ng-container>

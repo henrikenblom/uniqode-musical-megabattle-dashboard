@@ -24,11 +24,13 @@ export class DashboardComponent implements OnInit {
 
   MAX_PAGE_INDEX = 7;
   MAX_SCORES = 5;
-  VIEW_DELAY = 11500;
+  VIEW_DELAY = 12000;
+  scoreThresholdReached = false;
   initialized = false;
   usersFetched = false;
   highScoreEntries: HighScoreEntry[] = [];
   users: Map<string, User> = new Map<string, User>();
+  userIdArray: string[] = [];
   userCount = 0;
   mostInvoluntaryRocker: StatWinnerEntry;
   popMaster: StatWinnerEntry;
@@ -36,10 +38,13 @@ export class DashboardComponent implements OnInit {
   musicLover: StatWinnerEntry;
   soulMaster: StatWinnerEntry;
   discoMaster: StatWinnerEntry;
-  currentPageIndex = 0;
   generalStateQuizRunning = false;
+  grandTotal = 0;
   pop = new Howl({src: '../../assets/zapsplat_cartoon_pop_small_lid.mp3', volume: 0.2});
   soundOn = true;
+  showHighScore = true;
+  contenderIndex = 0;
+  currentContender: string;
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -59,24 +64,32 @@ export class DashboardComponent implements OnInit {
 
   private startDashboardRotation() {
     setInterval(() => {
-      this.currentPageIndex++;
-      if (this.currentPageIndex > this.MAX_PAGE_INDEX) {
-        this.currentPageIndex = 0;
+      this.showHighScore = !this.showHighScore;
+      this.currentContender = this.userIdArray[this.contenderIndex];
+      if (!this.showHighScore) {
+        this.contenderIndex++;
+        if (this.contenderIndex > this.userCount) {
+          this.contenderIndex = 0;
+        }
       }
     }, this.VIEW_DELAY);
   }
 
   private startFetchingUsers() {
-    this.db.collection<User>('users')
+    this.db.collection<User>('users',
+      ref => ref.orderBy('displayName'))
       .valueChanges()
       .forEach(users => {
         let uc = 0;
+        const uia: string[] = [];
         users.forEach(user => {
           this.users.set(user.uid, user);
           if (!user.admin) {
             uc++;
+            uia.push(user.uid);
           }
         });
+        this.userIdArray = uia;
         this.userCount = uc;
         if (!this.usersFetched && uc > 0) {
           this.usersFetched = true;
@@ -100,13 +113,15 @@ export class DashboardComponent implements OnInit {
         const stats = statsDocument.payload.doc.data() as PlayerStats;
         const uid = statsDocument.payload.doc.id;
         if (!this.users.get(uid).admin) {
-          this.highScoreEntries.push({points: stats.points, userId: uid, position: pos});
-          if (pos++ === this.MAX_SCORES) {
-            break;
+          this.grandTotal += stats.points;
+          if (pos++ <= this.MAX_SCORES) {
+            this.highScoreEntries.push({points: stats.points, userId: uid, position: pos});
           }
         }
       }
-      if (!this.initialized && this.highScoreEntries.length > 0) {
+      if (!this.initialized
+        && this.userCount > 1
+        && this.grandTotal > this.userCount) {
         this.initialized = true;
         this.fetchMostInvoluntaryRocker();
         this.fetchPopMaster();
@@ -115,6 +130,10 @@ export class DashboardComponent implements OnInit {
         this.fetchDiscoMaster();
         this.fetchMusicLover();
         this.startDashboardRotation();
+      }
+      if (!this.scoreThresholdReached
+        && this.grandTotal >= (this.userCount * 20)) {
+        this.scoreThresholdReached = true;
       }
     });
   }

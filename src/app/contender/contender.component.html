@@ -1,0 +1,12 @@
+<div class="statwinner" *ngIf="stats">
+  <div *ngIf="user" class="highscore-statwinner-header">{{user.displayName}}</div>
+  <div *ngIf="user" class="entry">
+    <td class="cell photo">
+      <img *ngIf="user.photoURL" class="avatar"
+           [src]="user.photoURL">
+    </td>
+    <td class="cell points">
+      <span>"{{description}}"</span>
+    </td>
+  </div>
+</div>
